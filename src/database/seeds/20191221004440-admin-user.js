@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const hash = require('../hash');
+import hash from '../hash';
 
 module.exports = {
   up: QueryInterface => {
