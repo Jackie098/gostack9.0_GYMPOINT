@@ -1,6 +1,22 @@
 /* eslint-disable no-unused-vars */
-module.exports = {
-  up: (queryInterface, Sequelize) => {},
+const hash = require('../hash');
 
-  down: (queryInterface, Sequelize) => {},
+module.exports = {
+  up: QueryInterface => {
+    return QueryInterface.bulkInsert(
+      'users',
+      [
+        {
+          name: 'Administrador',
+          email: 'admn@gympoint.com',
+          password_hash: hash,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      ],
+      {}
+    );
+  },
+
+  down: () => {},
 };
