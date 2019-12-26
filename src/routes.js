@@ -6,6 +6,6 @@ const routes = new Router();
 
 routes.get('/', (req, res) => res.json({ welcome: 'Hello motherfucks' }));
 
-Router.post('/users', UserController.store);
+routes.post('/users', UserController.store);
 
 export default routes;
