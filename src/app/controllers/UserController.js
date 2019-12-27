@@ -16,6 +16,12 @@ class UserController {
       email,
     });
   }
+
+  async update(req, res) {
+    const { email, oldPassword } = req.body;
+
+    const user = await User.findByPk(req.userId);
+  }
 }
 
 export default new UserController();
