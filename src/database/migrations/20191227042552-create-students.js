@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
-      hight: {
+      height: {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
