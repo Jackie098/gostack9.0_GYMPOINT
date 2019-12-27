@@ -12,4 +12,8 @@ routes.get('/', (req, res) => res.json({ welcome: 'Hello motherfucks' }));
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionsController.store);
 
+routes.use(authMiddleware);
+// ROTAS QUE PRECISAM DE AUTENTICAÇÃO
+routes.put('/users', UserController.update);
+
 export default routes;
