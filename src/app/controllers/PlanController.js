@@ -10,9 +10,27 @@ class PlanController {
   }
 
   async store(req, res) {
-    const planExists = await Plan.findOne();
+    const planExists = await Plan.findOne({
+      where: {
+        title: req.body.title,
+      },
+    });
 
-    return res.json(planExists);
+    if (planExists) {
+      return res
+        .status(401)
+        .json({ error: `Plan ${req.body.title} already exists` });
+    }
+
+    const { title, duration, price } = req.body;
+
+    const plan = await Plan.create({
+      title,
+      duration,
+      price,
+    });
+
+    return res.json(plan);
   }
 }
 
