@@ -2,24 +2,40 @@ import { Router } from 'express';
 
 import UserController from './app/controllers/UserController';
 import StudentController from './app/controllers/StudentController';
+import PlanController from './app/controllers/PlanController';
 import SessionsController from './app/controllers/SessionController';
+
 import authMiddleware from './app/middleware/auth';
 
 const routes = new Router();
 
 routes.get('/', (req, res) => res.json({ welcome: 'Hello motherfucks' }));
 
-// CRIAR NOVO ADM E SESSÃO
+/**
+ * Create new adm and session and it don't need auth
+ */
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionsController.store);
 
-// ROTAS QUE PRECISAM DE AUTENTICAÇÃO
+/**
+ * Routes that need autentication
+ */
 routes.use(authMiddleware);
 
-// SOBRE ADM's
+/**
+ * About Adm's
+ */
 routes.put('/users', UserController.update);
 
-// SOBRE STUDENTS
+/**
+ * About Students
+ */
 routes.post('/students', StudentController.store);
+
+/**
+ * About Plans
+ */
+routes.get('/plans', PlanController.index);
+routes.post('/plans', PlanController.store);
 
 export default routes;
