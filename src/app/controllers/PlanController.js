@@ -1,7 +1,6 @@
-// import * as Yup from 'yup';
+import * as Yup from 'yup';
 
 import Plan from '../models/Plan';
-// import User from '../models/User';
 
 class PlanController {
   async index(req, res) {
@@ -10,6 +9,16 @@ class PlanController {
   }
 
   async store(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      duration: Yup.number().required(),
+      price: Yup.number().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      res.status(400).json({ error: 'Validation fails' });
+    }
+
     const planExists = await Plan.findOne({
       where: {
         title: req.body.title,
