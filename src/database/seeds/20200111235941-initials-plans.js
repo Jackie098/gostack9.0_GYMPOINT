@@ -22,6 +22,20 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        title: 'Plus',
+        duration: 12,
+        price: 79.0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        title: 'Standard',
+        duration: 2,
+        price: 119.0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]);
   },
 
