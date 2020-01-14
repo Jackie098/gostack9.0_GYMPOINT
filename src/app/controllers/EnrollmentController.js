@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { parseISO, isBefore, format, subHours } from 'date-fns';
+import { parseISO, addMonths, isBefore, format, subHours } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
@@ -8,31 +8,44 @@ import Enrollment from '../models/Enrollment';
 class EnrollmentController {
   async store(req, res) {
     const schema = Yup.object().shape({
-      start_date: Yup.date().required(),
-      end_date: Yup.date().required(),
-      price: Yup.number().required(),
+      startDate: Yup.date().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const studentExists = await Student.findByPk(req.params.studentId);
+    const student = await Student.findByPk(req.params.studentId);
 
-    if (!studentExists) {
+    if (!student) {
       return res.status(400).json({ error: "Student doesn't exists" });
     }
 
-    const planExists = await Plan.findByPk(req.params.planId);
+    const plan = await Plan.findByPk(req.params.planId);
 
-    if (!planExists) {
+    if (!plan) {
       return res.status(400).json({ error: "Plan doesn't exists" });
     }
 
-    return res.json({
-      student: studentExists,
-      plan: planExists,
+    const startDate = parseISO(req.body.startDate);
+
+    if (isBefore(startDate, new Date())) {
+      return res.status(400).json({ error: 'Past dates are not permitted' });
+    }
+
+    const endDate = addMonths(startDate, plan.duration);
+
+    const price = plan.price * plan.duration;
+
+    const enrollment = await Enrollment.create({
+      start_date: startDate,
+      end_date: endDate,
+      student_id: student.id,
+      plan_id: plan.id,
+      price,
     });
+
+    return res.json(enrollment);
   }
 }
 

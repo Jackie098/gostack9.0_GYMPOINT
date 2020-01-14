@@ -16,6 +16,11 @@ class Enrollment extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.belongsTo(models.Student, { foreingKey: 'student_id', as: 'student' });
+    this.belongsTo(models.Plan, { foreingKey: 'plan_id', as: 'plan' });
+  }
 }
 
 export default Enrollment;
