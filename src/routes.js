@@ -10,7 +10,7 @@ import authMiddleware from './app/middleware/auth';
 
 const routes = new Router();
 
-routes.get('/', (req, res) => res.json({ welcome: 'Hello motherfucks' }));
+routes.get('/', (req, res) => res.json({ welcome: 'Redirecting you to home' }));
 
 /**
  * Create new adm and session and it don't need auth
@@ -44,6 +44,7 @@ routes.delete('/plans/:id', PlanController.delete);
 /**
  * About Enrollment
  */
-routes.post('/enrollment/:studentId/:planId', EnrollmentController.store);
+routes.get('/enrollments', EnrollmentController.index);
+routes.post('/enrollments/:studentId/:planId', EnrollmentController.store);
 
 export default routes;
