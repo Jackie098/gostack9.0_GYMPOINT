@@ -76,6 +76,10 @@ class EnrollmentController {
 
     return res.json(enrollment);
   }
+
+  async delete(req, res) {
+    return res.json();
+  }
 }
 
 export default new EnrollmentController();

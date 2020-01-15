@@ -18,6 +18,7 @@ class WelcomeMail {
         student: enrollment.student.name,
         tot_price: enrollment.price,
         plan: enrollment.plan.title,
+        price_month: enrollment.plan.price,
         duration: enrollment.plan.duration,
         start_date: format(
           parseISO(enrollment.start_date),
@@ -28,6 +29,13 @@ class WelcomeMail {
         ),
         end_date: format(
           parseISO(enrollment.end_date),
+          "'dia' dd 'de' MMMM', às' H:mm'h",
+          {
+            locale: pt,
+          }
+        ),
+        enrollment_date: format(
+          parseISO(enrollment.created_ad),
           "'dia' dd 'de' MMMM', às' H:mm'h",
           {
             locale: pt,
