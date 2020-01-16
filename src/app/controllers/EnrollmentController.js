@@ -105,60 +105,79 @@ class EnrollmentController {
       startDate: Yup.date(),
       on: Yup.boolean(),
       price: Yup.number(),
-      plan: Yup.string(),
+      planId: Yup.number().integer(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const enrollment = await Enrollment.findByPk(req.params.id, {
-      attributes: ['id', 'start_date', 'end_date', 'price', 'on'],
+    const enrollment = await Enrollment.findByPk(req.params.enrollId, {
+      attributes: ['id', 'start_date', 'end_date', 'price', 'on', 'plan_id'],
       include: [
         {
           model: Plan,
           as: 'plan',
-          attributes: ['title', 'duration', 'price'],
+          attributes: ['id', 'title', 'duration', 'price'],
         },
       ],
     });
 
     if (!enrollment) {
-      return res.status(400).json({ error: 'Students does not exists' });
+      return res.status(400).json({ error: 'Enrollment does not exists' });
     }
 
-    const { startDate, on, price, plan } = req.body;
-
-    if (startDate && startDate !== enrollment.start_date) {
-      if (isBefore(startDate, new Date())) {
-        return res.status(400).json({ error: 'Past dates are not permitted' });
-      }
-
-      enrollment.end_date = addMonths(startDate, enrollment.plan.duration);
-    }
-
-    if (on === true) {
-      enrollment.on = on;
-    }
-
+    const { startDate, on, price, planId } = req.body;
+    console.log(`\n\n ${planId} \n\n`);
     /**
-     * Caso seja adicionado desconto individual
+     * Check if the user wants to change the plan and if it (plan)
+     * already exists, if yes, it changes plan-related fields
      */
-    if (price && price < enrollment.price && !plan) {
-      enrollment.price = price;
-    }
-
-    if (plan) {
-      const planExists = await Plan.findOne({ where: { title: plan } });
-
+    if (planId && planId !== enrollment.plan_id) {
+      const planExists = await Plan.findByPk(planId);
+      console.log(`\n\n ${planExists} \n\n`);
       if (!planExists) {
         return res.status(401).json({ error: 'Plan does not exists' });
       }
 
       enrollment.price = planExists.price * planExists.duration;
+      enrollment.plan_id = planExists.id;
+      enrollment.end_date = addMonths(
+        enrollment.start_date,
+        planExists.duration
+      );
     }
 
-    await enrollment.save();
+    if (startDate && startDate !== enrollment.start_date) {
+      if (isBefore(parseISO(startDate), new Date())) {
+        return res.status(400).json({ error: 'Past dates are not permitted' });
+      }
+
+      enrollment.start_date = startDate;
+      enrollment.end_date = addMonths(
+        parseISO(startDate),
+        enrollment.plan.duration
+      );
+    }
+
+    /**
+     * To add discount
+     */
+    if (price && price < enrollment.price) {
+      enrollment.price = price;
+    }
+
+    if (on === true) {
+      enrollment.on = true;
+    }
+
+    await enrollment.update({
+      start_date: enrollment.start_date,
+      end_date: enrollment.end_date,
+      price: enrollment.price,
+      plan_id: enrollment.plan_id,
+      on: enrollment.on,
+    });
 
     return res.json(enrollment);
   }
