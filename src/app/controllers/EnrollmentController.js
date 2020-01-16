@@ -100,6 +100,69 @@ class EnrollmentController {
     return res.json(enrollment);
   }
 
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      startDate: Yup.date(),
+      on: Yup.boolean(),
+      price: Yup.number(),
+      plan: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
+
+    const enrollment = await Enrollment.findByPk(req.params.id, {
+      attributes: ['id', 'start_date', 'end_date', 'price', 'on'],
+      include: [
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['title', 'duration', 'price'],
+        },
+      ],
+    });
+
+    if (!enrollment) {
+      return res.status(400).json({ error: 'Students does not exists' });
+    }
+
+    const { startDate, on, price, plan } = req.body;
+
+    if (startDate && startDate !== enrollment.start_date) {
+      if (isBefore(startDate, new Date())) {
+        return res.status(400).json({ error: 'Past dates are not permitted' });
+      }
+
+      enrollment.end_date = addMonths(startDate, enrollment.plan.duration);
+    }
+
+    if (on === true) {
+      enrollment.on = on;
+    }
+
+    /**
+     * Caso seja adicionado desconto individual
+     */
+    if (price && price < enrollment.price && !plan) {
+      enrollment.price = price;
+    }
+
+    if (plan) {
+      const planExists = await Plan.findOne({ where: { title: plan } });
+
+      if (!planExists) {
+        return res.status(401).json({ error: 'Plan does not exists' });
+      }
+
+      enrollment.price = planExists.price * planExists.duration;
+    }
+
+    await enrollment.save();
+
+    return res.json(enrollment);
+  }
+
   async delete(req, res) {
     const enrollment = await Enrollment.findByPk(req.params.id);
 
