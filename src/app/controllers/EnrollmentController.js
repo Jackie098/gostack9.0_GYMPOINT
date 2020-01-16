@@ -101,11 +101,17 @@ class EnrollmentController {
   }
 
   async delete(req, res) {
-    // await Queue.add(WelcomeMail.key, {
-    //   enrollment,
-    // });
+    const enrollment = await Enrollment.findByPk(req.params.id);
 
-    return res.json();
+    if (!enrollment) {
+      return res.status(400).json({ error: 'Enrollment does not exists' });
+    }
+
+    enrollment.on = false;
+
+    await enrollment.save();
+
+    return res.json(enrollment);
   }
 }
 
