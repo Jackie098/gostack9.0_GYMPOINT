@@ -8,7 +8,7 @@ class Mail {
   constructor() {
     const { host, port, secure, auth } = mailConfig;
 
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host,
       port,
       secure,
@@ -25,7 +25,7 @@ class Mail {
       'compile',
       nodemailerhbs({
         viewEngine: exphbs.create({
-          layoutDir: resolve(viewPath, 'layouts'),
+          layoutsDir: resolve(viewPath, 'layouts'),
           partialsDir: resolve(viewPath, 'partials'),
           defaultLayout: 'default',
           extname: '.hbs',

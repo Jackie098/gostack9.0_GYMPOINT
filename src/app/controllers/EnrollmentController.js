@@ -1,9 +1,12 @@
 import * as Yup from 'yup';
-import { parseISO, addMonths, isBefore, format, subHours } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { parseISO, addMonths, isBefore } from 'date-fns';
+// import pt from 'date-fns/locale/pt';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
 import Enrollment from '../models/Enrollment';
+
+import WelcomeMail from '../jobs/WelcomeMail';
+import Queue from '../../lib/Queue';
 
 class EnrollmentController {
   async index(req, res) {
@@ -66,7 +69,7 @@ class EnrollmentController {
 
     const price = plan.price * plan.duration;
 
-    const enrollment = await Enrollment.create({
+    const { id } = await Enrollment.create({
       start_date: startDate,
       end_date: endDate,
       studentId: student.id,
@@ -74,10 +77,34 @@ class EnrollmentController {
       price,
     });
 
+    const enrollment = await Enrollment.findByPk(id, {
+      attributes: ['id', 'start_date', 'end_date', 'price', 'created_at'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title', 'duration', 'price'],
+        },
+      ],
+    });
+
+    await Queue.add(WelcomeMail.key, {
+      enrollment,
+    });
+
     return res.json(enrollment);
   }
 
   async delete(req, res) {
+    // await Queue.add(WelcomeMail.key, {
+    //   enrollment,
+    // });
+
     return res.json();
   }
 }

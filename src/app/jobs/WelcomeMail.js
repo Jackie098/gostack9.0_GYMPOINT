@@ -35,7 +35,7 @@ class WelcomeMail {
           }
         ),
         enrollment_date: format(
-          parseISO(enrollment.created_ad),
+          parseISO(enrollment.created_at),
           "'dia' dd 'de' MMMM', às' H:mm'h",
           {
             locale: pt,
