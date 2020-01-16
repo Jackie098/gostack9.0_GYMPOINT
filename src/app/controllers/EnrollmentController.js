@@ -146,6 +146,7 @@ class EnrollmentController {
         enrollment.start_date,
         planExists.duration
       );
+      console.log(`\n\n ${enrollment.plan_id} \n\n`);
     }
 
     if (startDate && startDate !== enrollment.start_date) {
