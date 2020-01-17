@@ -128,14 +128,21 @@ class EnrollmentController {
     }
 
     const { startDate, on, price, planId } = req.body;
-    console.log(`\n\n ${planId} \n\n`);
+
+    /**
+     * To add discount
+     */
+    if (price && price < enrollment.price) {
+      enrollment.price = price;
+    }
+
     /**
      * Check if the user wants to change the plan and if it (plan)
      * already exists, if yes, it changes plan-related fields
      */
-    if (planId && planId !== enrollment.plan_id) {
+    if (planId && !(planId === enrollment.plan_id)) {
       const planExists = await Plan.findByPk(planId);
-      console.log(`\n\n ${planExists} \n\n`);
+
       if (!planExists) {
         return res.status(401).json({ error: 'Plan does not exists' });
       }
@@ -146,9 +153,11 @@ class EnrollmentController {
         enrollment.start_date,
         planExists.duration
       );
-      console.log(`\n\n ${enrollment.plan_id} \n\n`);
     }
 
+    /**
+     * To change the begin date at the gym
+     */
     if (startDate && startDate !== enrollment.start_date) {
       if (isBefore(parseISO(startDate), new Date())) {
         return res.status(400).json({ error: 'Past dates are not permitted' });
@@ -161,13 +170,6 @@ class EnrollmentController {
       );
     }
 
-    /**
-     * To add discount
-     */
-    if (price && price < enrollment.price) {
-      enrollment.price = price;
-    }
-
     if (on === true) {
       enrollment.on = true;
     }
@@ -176,7 +178,7 @@ class EnrollmentController {
       start_date: enrollment.start_date,
       end_date: enrollment.end_date,
       price: enrollment.price,
-      plan_id: enrollment.plan_id,
+      planId: enrollment.plan_id,
       on: enrollment.on,
     });
 
