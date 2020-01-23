@@ -5,6 +5,7 @@ import StudentController from './app/controllers/StudentController';
 import PlanController from './app/controllers/PlanController';
 import SessionsController from './app/controllers/SessionController';
 import EnrollmentController from './app/controllers/EnrollmentController';
+import CheckinController from './app/controllers/CheckinController';
 
 import authMiddleware from './app/middleware/auth';
 
@@ -17,6 +18,11 @@ routes.get('/', (req, res) => res.json({ welcome: 'Redirecting you to home' }));
  */
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionsController.store);
+
+/**
+ * For students to check in
+ */
+routes.post('/students/:id/checkins', CheckinController.store);
 
 /**
  * Routes that need autentication
