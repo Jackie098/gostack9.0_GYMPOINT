@@ -8,12 +8,15 @@ import Enrollment from '../models/Enrollment';
 class CheckinController {
   async index(req, res) {
     const { id } = req.params;
+    const { page } = req.query;
 
     const checkins = await Checkin.findAll({
       where: {
         student_id: id,
       },
       attributes: ['id', 'created_at'],
+      limit: 5,
+      offset: (page - 1) * 5,
       include: [
         {
           model: Student,
