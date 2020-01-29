@@ -6,6 +6,26 @@ import Student from '../models/Student';
 import Enrollment from '../models/Enrollment';
 
 class CheckinController {
+  async index(req, res) {
+    const { id } = req.params;
+
+    const checkins = await Checkin.findAll({
+      where: {
+        student_id: id,
+      },
+      attributes: ['id', 'created_at'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+
+    return res.json(checkins);
+  }
+
   async store(req, res) {
     const studentId = req.params.id;
 

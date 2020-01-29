@@ -23,6 +23,7 @@ routes.post('/sessions', SessionsController.store);
  * For students to check-in
  */
 routes.post('/students/:id/checkins', CheckinController.store);
+routes.get('/students/:id/allcheckins/', CheckinController.index);
 
 /**
  * Routes that need autentication
