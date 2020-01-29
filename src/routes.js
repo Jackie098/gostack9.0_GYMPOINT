@@ -20,7 +20,7 @@ routes.post('/users', UserController.store);
 routes.post('/sessions', SessionsController.store);
 
 /**
- * For students to check in
+ * For students to check-in
  */
 routes.post('/students/:id/checkins', CheckinController.store);
 
