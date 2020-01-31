@@ -6,7 +6,7 @@ class HelpOrdersController {
 
     const questions = await HelpOrders.findAll({
       where: { student_id: id },
-      attributes: ['question', 'answer'],
+      attributes: ['id', 'question', 'answer'],
     });
 
     if (questions.length === 0) {

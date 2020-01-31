@@ -24,7 +24,23 @@ class AnswerController {
   }
 
   async update(req, res) {
-    return res.json();
+    // HelpOrder id and not student id
+    const { id } = req.body;
+
+    const question = await HelpOrders.findByPk(id);
+
+    if (!question) {
+      return res.status(401).json({ error: 'No question found' });
+    }
+
+    const { answer } = req.body;
+
+    await question.update({
+      answer,
+      answer_at: new Date(),
+    });
+
+    return res.json(question);
   }
 }
 
