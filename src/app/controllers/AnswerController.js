@@ -25,7 +25,7 @@ class AnswerController {
 
   async update(req, res) {
     // HelpOrder id and not student id
-    const { id } = req.body;
+    const { id } = req.params;
 
     const question = await HelpOrders.findByPk(id);
 
