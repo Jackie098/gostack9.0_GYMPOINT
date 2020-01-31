@@ -7,6 +7,7 @@ import SessionsController from './app/controllers/SessionController';
 import EnrollmentController from './app/controllers/EnrollmentController';
 import CheckinController from './app/controllers/CheckinController';
 import AnswerController from './app/controllers/AnswerController';
+import HelpOrdersController from './app/controllers/HelpOrdersController';
 
 import authMiddleware from './app/middleware/auth';
 
@@ -25,6 +26,11 @@ routes.post('/sessions', SessionsController.store);
  */
 routes.post('/students/:id/checkins', CheckinController.store);
 routes.get('/students/:id/allcheckins/', CheckinController.index);
+
+/**
+ * FOr students to ask for help
+ */
+routes.post('/students/:id/help-orders', HelpOrdersController.store);
 
 /**
  * Routes that need autentication
