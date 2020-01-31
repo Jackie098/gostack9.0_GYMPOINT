@@ -68,5 +68,6 @@ routes.delete('/enrollments/:id', EnrollmentController.delete);
  * About Answers
  */
 routes.get('/answers', AnswerController.index);
+routes.put('/answers/:id', AnswerController.update);
 
 export default routes;
