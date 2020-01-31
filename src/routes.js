@@ -30,6 +30,7 @@ routes.get('/students/:id/allcheckins/', CheckinController.index);
 /**
  * FOr students to ask for help
  */
+routes.get('/students/:id/help-orders', HelpOrdersController.index);
 routes.post('/students/:id/help-orders', HelpOrdersController.store);
 
 /**
