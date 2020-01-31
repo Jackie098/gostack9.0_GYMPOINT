@@ -1,6 +1,6 @@
 import Bee from 'bee-queue';
-import WelcomeMail from '../app/jobs/WelcomeMail';
 import redisConfig from '../config/redis';
+import WelcomeMail from '../app/jobs/WelcomeMail';
 
 const jobs = [WelcomeMail];
 

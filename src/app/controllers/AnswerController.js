@@ -1,6 +1,9 @@
 import HelpOrders from '../models/HelpOrders';
 import Student from '../models/Student';
 
+import AnswerMail from '../jobs/AnswerMail';
+import Queue from '../../lib/Queue';
+
 class AnswerController {
   async index(req, res) {
     const { page } = req.query;
@@ -27,7 +30,12 @@ class AnswerController {
     // HelpOrder id and not student id
     const { id } = req.params;
 
-    const question = await HelpOrders.findByPk(id);
+    const question = await HelpOrders.findByPk(id, {
+      attributes: ['id', 'question', 'answer', 'answer_at'],
+      include: [
+        { model: Student, as: 'student', attributes: ['id', 'name', 'email'] },
+      ],
+    });
 
     if (!question) {
       return res.status(401).json({ error: 'No question found' });
@@ -38,6 +46,10 @@ class AnswerController {
     await question.update({
       answer,
       answer_at: new Date(),
+    });
+
+    await Queue.add(AnswerMail.key, {
+      question,
     });
 
     return res.json(question);
