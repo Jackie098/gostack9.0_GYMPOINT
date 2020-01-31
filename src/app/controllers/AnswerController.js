@@ -31,7 +31,7 @@ class AnswerController {
     const { id } = req.params;
 
     const question = await HelpOrders.findByPk(id, {
-      attributes: ['id', 'question', 'answer', 'answer_at'],
+      attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
       include: [
         { model: Student, as: 'student', attributes: ['id', 'name', 'email'] },
       ],

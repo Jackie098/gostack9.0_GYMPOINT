@@ -17,7 +17,7 @@ class AnswerMail {
       context: {
         student: question.student.name,
         question: question.question,
-        answer: question.asnwer,
+        answer: question.answer,
         answerAt: format(
           parseISO(question.answer_at),
           "'dia' dd 'de' MMMM', às' H:mm'h",
