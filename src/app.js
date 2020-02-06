@@ -4,6 +4,7 @@ import express from 'express';
 import Youch from 'youch';
 import * as Sentry from '@sentry/node';
 import 'express-async-errors';
+
 import routes from './routes';
 import sentryConfig from './config/sentry';
 
@@ -17,7 +18,7 @@ class App {
 
     this.middlewares();
     this.routes();
-    this.expectionHandler();
+    this.exceptionHandler();
   }
 
   middlewares() {
